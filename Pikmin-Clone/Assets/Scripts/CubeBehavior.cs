@@ -9,14 +9,29 @@ public class CubeBehavior : MonoBehaviour
     private float proximityRange = 3f;
     private float movementSpeed = 10f;
 
+    private bool isFollwing, isAttacking;
+    private string currentColor;
+
     void Start()
     {
+        currentColor = player.GetComponent<GameController>()._enumColor.ToString();
         setColor();
     }
 
     void Update()
     {
-        if (Vector3.Distance(player.transform.position, transform.position) < detectionRange && Vector3.Distance(player.transform.position, transform.position) > proximityRange && tag == player.GetComponent<GameController>()._enumColor.ToString())
+        if (!isFollwing 
+            && Vector3.Distance(player.transform.position, transform.position) < detectionRange
+            //&& tag == player.GetComponent<GameController>()._enumColor.ToString()
+            && player.CompareTag(currentColor)
+            )
+        {
+            isFollwing = true;
+        }
+
+        if (isFollwing 
+            && Vector3.Distance(player.transform.position, transform.position) > proximityRange 
+            )
         {
             Vector3 playerPos = player.transform.position;
             transform.position = Vector3.MoveTowards(transform.position, playerPos, movementSpeed*Time.deltaTime);
